@@ -50,8 +50,8 @@ func (b *Board) setPos(pos Position, p Player) {
 	*b.getPos(pos) = p
 }
 
-func (b *Board) isGameOver() bool {
-	if b.TimesPlayed == 9 {
+func (b *Board) isGameOver(p Player) bool {
+	if b.TimesPlayed == 9 || b.checkVictory(p) {
 		return true
 	}
 
@@ -74,9 +74,10 @@ func CreateBoard() Board {
 	}
 }
 
-func (board *Board) getPlay(player Player) Position {
+func (board Board) getPlay(player Player) Position {
 	var pos Position = Position{-3, -3}
 	var x, y int
+	//todo validar falha do parse
 	if player == X || player == O {
 		for !board.valitePlay(pos) {
 			reader := bufio.NewReader(os.Stdin)
@@ -94,5 +95,56 @@ func (board *Board) getPlay(player Player) Position {
 
 		return pos
 	}
+	pos = getBestPos(board, BOT)
+	// fmt.Println(pos)
 	return pos
+}
+
+func (board *Board) checkVictory(player Player) bool {
+	win := 0
+	for _, line := range board.Board {
+		for _, boardPlayer := range line {
+			if player == boardPlayer {
+				win += 1
+			}
+			if win == 3 {
+				return true
+			}
+		}
+		win = 0
+	}
+
+	for x := range board.Board {
+		for y := range board.Board[x] {
+			if player == *board.getPos(Position{y, x}) {
+				win += 1
+			}
+			if win == 3 {
+				return true
+			}
+		}
+		win = 0
+	}
+
+	for x := range board.Board {
+		if player == *board.getPos(Position{x, x}) {
+			win += 1
+		}
+	}
+	if win == 3 {
+		return true
+	}
+	win = 0
+
+	for x := range board.Board {
+		if player == *board.getPos(Position{x, 2 - x}) {
+			win += 1
+		}
+	}
+	if win == 3 {
+		return true
+	}
+	win = 0
+
+	return false
 }

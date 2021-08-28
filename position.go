@@ -10,3 +10,11 @@ func (p *Position) validate() bool {
 	return p.X >= min && p.X <= max &&
 		p.Y >= min && p.Y <= max
 }
+
+func (pos *Position) isCorner() bool {
+	return (pos.X == 0 && (pos.Y == 0 || pos.Y == 2)) || (pos.Y == 2 && (pos.Y == 0 || pos.Y == 2))
+}
+
+func (pos *Position) isCenter() bool {
+	return pos.X == 1 && pos.Y == 1
+}
