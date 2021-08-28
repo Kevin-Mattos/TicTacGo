@@ -6,6 +6,7 @@ const (
 	NoPlayer Player = iota
 	X
 	O
+	BOT
 )
 
 func (p Player) String() string {
@@ -13,14 +14,19 @@ func (p Player) String() string {
 	case X:
 		return "X"
 	case O:
-		return "o"
+		return "O"
+	case BOT:
+		return "B"
 	default:
 		return "-"
 	}
 }
 
-func (player Player) Other() Player {
+func (player Player) Other(isBot bool) Player {
 	if player == X {
+		if isBot {
+			return BOT
+		}
 		return O
 	}
 	return X
