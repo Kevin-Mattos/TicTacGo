@@ -4,17 +4,12 @@ import "fmt"
 
 func main() {
 	board := CreateBoard()
-	x, y := 0, 0
 	player := X
+	var pos Position
 	for !board.isGameOver() {
 		player = player.Other()
-		pos := Position{x, y}
+		pos = board.getPlay(player)
 		board.play(player, pos)
-		y++
-		if y == 3 {
-			x++
-			y = 0
-		}
 		fmt.Println(board)
 	}
 
