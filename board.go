@@ -1,5 +1,13 @@
 package main
 
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
 type Board struct {
 	Board       [3][3]Player
 	TimesPlayed int
@@ -18,11 +26,16 @@ func (b Board) String() string {
 }
 
 func (b *Board) play(p Player, pos Position) {
-	if !pos.validate() || !b.isValidPosition(pos) {
-		return
-	}
+
 	b.setPos(pos, p)
 	b.TimesPlayed++
+}
+
+func (b *Board) valitePlay(pos Position) bool {
+	if !pos.validate() || !b.isValidPosition(pos) {
+		return false
+	}
+	return true
 }
 
 func (b *Board) isValidPosition(pos Position) bool {
@@ -59,4 +72,27 @@ func CreateBoard() Board {
 			},
 		},
 	}
+}
+
+func (board *Board) getPlay(player Player) Position {
+	var pos Position = Position{-3, -3}
+	var x, y int
+	if player == X || player == O {
+		for !board.valitePlay(pos) {
+			reader := bufio.NewReader(os.Stdin)
+			text, _ := reader.ReadString('\n')
+			text = strings.Replace(text, "\n", "", -1)
+			x, _ = strconv.Atoi(text)
+			text, _ = reader.ReadString('\n')
+			text = strings.Replace(text, "\n", "", -1)
+			y, _ = strconv.Atoi(text)
+			pos = Position{x, y}
+			if !board.valitePlay(pos) {
+				fmt.Println("digite novamente")
+			}
+		}
+
+		return pos
+	}
+	return pos
 }
